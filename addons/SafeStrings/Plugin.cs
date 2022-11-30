@@ -1,5 +1,5 @@
 #if TOOLS
-namespace SafeStrings;
+namespace SafeStrings.Editor;
 
 using System;
 using Godot;
