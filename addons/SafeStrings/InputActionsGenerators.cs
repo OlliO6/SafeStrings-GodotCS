@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Godot;
 
-public class InputActionsWriter
+public class InputActionsGenerators
 {
     private FileSystemWatcher watcher;
 

@@ -9,8 +9,8 @@ public partial class Plugin : EditorPlugin
 {
     public static Plugin Instance { get; private set; }
 
-    private InputActionsWriter inputActionsWatcher;
-    private ResWriter resWriter;
+    private InputActionsGenerators inputActionsGen;
+    private ResGenerator resGen;
 
     public override void _EnterTree()
     {
@@ -18,11 +18,11 @@ public partial class Plugin : EditorPlugin
 
         AddToolMenuItem("Update SafeStrings", new Callable(this, MethodName.Update));
 
-        inputActionsWatcher = new();
-        inputActionsWatcher.Start();
+        inputActionsGen = new();
+        inputActionsGen.Start();
 
-        resWriter = new();
-        resWriter.Start();
+        resGen = new();
+        resGen.Start();
     }
 
     public override void _ExitTree()
@@ -30,11 +30,11 @@ public partial class Plugin : EditorPlugin
         Instance = null;
         RemoveToolMenuItem("Update SafeStrings");
 
-        inputActionsWatcher?.Stop();
-        inputActionsWatcher = null;
+        inputActionsGen?.Stop();
+        inputActionsGen = null;
 
-        resWriter?.Stop();
-        resWriter = null;
+        resGen?.Stop();
+        resGen = null;
     }
 
     public override void _Process(double delta)
@@ -48,17 +48,17 @@ public partial class Plugin : EditorPlugin
 
     private void OnBuilded()
     {
-        inputActionsWatcher = new();
-        inputActionsWatcher.Start();
+        inputActionsGen = new();
+        inputActionsGen.Start();
 
-        resWriter = new();
-        resWriter.Start();
+        resGen = new();
+        resGen.Start();
     }
 
     private void Update()
     {
-        inputActionsWatcher?.Update();
-        resWriter?.Update();
+        inputActionsGen?.Update();
+        resGen?.Update();
     }
 }
 #endif

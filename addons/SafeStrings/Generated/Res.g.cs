@@ -15,9 +15,9 @@ public static class Res
         public static class SafeStrings
         {
             public static readonly StringName BuiltInInputActions_cs = "res://addons/SafeStrings/BuiltInInputActions.cs";
-            public static readonly StringName InputActionsWriter_cs = "res://addons/SafeStrings/InputActionsWriter.cs";
+            public static readonly StringName InputActionsGenerators_cs = "res://addons/SafeStrings/InputActionsGenerators.cs";
             public static readonly StringName Plugin_cs = "res://addons/SafeStrings/Plugin.cs";
-            public static readonly StringName ResWriter_cs = "res://addons/SafeStrings/ResWriter.cs";
+            public static readonly StringName ResGenerator_cs = "res://addons/SafeStrings/ResGenerator.cs";
             public static readonly StringName plugin_cfg = "res://addons/SafeStrings/plugin.cfg";
             public static class Generated
             {

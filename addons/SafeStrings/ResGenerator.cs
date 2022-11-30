@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Godot;
 
-public class ResWriter
+public class ResGenerator
 {
     private FileSystemWatcher watcher;
 
