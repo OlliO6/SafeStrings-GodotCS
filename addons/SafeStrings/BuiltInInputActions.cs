@@ -4,27 +4,27 @@ using Godot;
 
 public static partial class InputAction
 {
-    public static class BuildInUI
+    public static class BuildIn
     {
-        public static readonly StringName Accept = "ui_accept";
-        public static readonly StringName Select = "ui_select";
-        public static readonly StringName Cancel = "ui_cancel";
-        public static readonly StringName FocusNext = "ui_focus_next";
-        public static readonly StringName FocusPrev = "ui_focus_prev";
-        public static readonly StringName Left = "ui_left";
-        public static readonly StringName Right = "ui_right";
-        public static readonly StringName Up = "ui_up";
-        public static readonly StringName Down = "ui_down";
-        public static readonly StringName PageUp = "ui_page_up";
-        public static readonly StringName PageDown = "ui_page_down";
-        public static readonly StringName Home = "ui_home";
-        public static readonly StringName End = "ui_end";
-        public static readonly StringName Cut = "ui_cut";
-        public static readonly StringName Copy = "ui_copy";
-        public static readonly StringName Paste = "ui_paste";
-        public static readonly StringName Undo = "ui_undo";
-        public static readonly StringName Redo = "ui_redo";
-        public static readonly StringName TextCompletionQuery = "ui_text_completion_query";
+        public static readonly StringName UiAccept = "ui_accept";
+        public static readonly StringName UiSelect = "ui_select";
+        public static readonly StringName UiCancel = "ui_cancel";
+        public static readonly StringName UiFocusNext = "ui_focus_next";
+        public static readonly StringName UiFocusPrev = "ui_focus_prev";
+        public static readonly StringName UiLeft = "ui_left";
+        public static readonly StringName UiRight = "ui_right";
+        public static readonly StringName UiUp = "ui_up";
+        public static readonly StringName UiDown = "ui_down";
+        public static readonly StringName UiPageUp = "ui_page_up";
+        public static readonly StringName UiPageDown = "ui_page_down";
+        public static readonly StringName UiHome = "ui_home";
+        public static readonly StringName UiEnd = "ui_end";
+        public static readonly StringName UiCut = "ui_cut";
+        public static readonly StringName UiCopy = "ui_copy";
+        public static readonly StringName UiPaste = "ui_paste";
+        public static readonly StringName UiUndo = "ui_undo";
+        public static readonly StringName UiRedo = "ui_redo";
+        public static readonly StringName UiTextCompletionQuery = "ui_text_completion_query";
         // public static readonly StringName d = "ui_text_newline";
         // public static readonly StringName d = "ui_text_newline_blank";
         // public static readonly StringName d = "ui_text_newline_above";

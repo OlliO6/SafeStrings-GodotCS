@@ -15,7 +15,7 @@ public partial class Plugin : EditorPlugin
     {
         Instance = this;
 
-        AddToolMenuItem("SafeStringsFullUpdate", new Callable(this, MethodName.FullUpdate));
+        AddToolMenuItem("Update SafeStrings", new Callable(this, MethodName.Update));
 
         inputActionsWatcher = new();
         inputActionsWatcher.Start();
@@ -24,7 +24,7 @@ public partial class Plugin : EditorPlugin
     public override void _ExitTree()
     {
         Instance = null;
-        RemoveToolMenuItem("SafeStringsFullUpdate");
+        RemoveToolMenuItem("Update SafeStrings");
 
         inputActionsWatcher?.Stop();
         inputActionsWatcher = null;
@@ -45,9 +45,9 @@ public partial class Plugin : EditorPlugin
         inputActionsWatcher.Start();
     }
 
-    private void FullUpdate()
+    private void Update()
     {
-        inputActionsWatcher?.FullUpdate();
+        inputActionsWatcher?.Update();
     }
 }
 #endif

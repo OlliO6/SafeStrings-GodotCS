@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Godot;
 
-public class InputActionsWriter
+public partial class InputActionsWriter : Godot.Object
 {
     private FileSystemWatcher watcher;
 
@@ -17,16 +17,35 @@ public class InputActionsWriter
         watcher = new FileSystemWatcher();
         watcher.Path = ProjectSettings.GlobalizePath("res://");
         watcher.Filter = "project.godot";
+        watcher.EnableRaisingEvents = true;
+        watcher.IncludeSubdirectories = false;
 
-        FullUpdate();
+        watcher.NotifyFilter = NotifyFilters.Attributes
+                                | NotifyFilters.CreationTime
+                                | NotifyFilters.DirectoryName
+                                | NotifyFilters.FileName
+                                | NotifyFilters.LastAccess
+                                | NotifyFilters.LastWrite
+                                | NotifyFilters.Security
+                                | NotifyFilters.Size;
+
+        watcher.Changed += OnProjectChanged;
+
+        Update();
+    }
+
+    private void OnProjectChanged(object sender, FileSystemEventArgs e)
+    {
+        Callable.From(Update).CallDeferred();
     }
 
     public void Stop()
     {
+        watcher.EnableRaisingEvents = false;
         watcher = null;
     }
 
-    public void FullUpdate()
+    public void Update()
     {
         ConfigFile project = new();
         var error = project.Load("res://project.godot");
@@ -52,14 +71,14 @@ public class InputActionsWriter
         {
             sb.Append("    public static readonly StringName ")
                 .Append(action.ToPascalCase())
-                .Append(" = ")
+                .Append(" = \"")
                 .Append(action)
-                .Append(";\n");
+                .Append("\";\n");
         }
 
         sb.Append("}");
 
-        GD.Print(sb.ToString());
+        File.WriteAllText("addons/SafeStrings/Generated/InputActions.g.cs", sb.ToString(), Encoding.UTF8);
     }
 }
 

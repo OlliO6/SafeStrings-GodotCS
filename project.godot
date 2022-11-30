@@ -28,6 +28,26 @@ jump={
 "deadzone": 0.5,
 "events": []
 }
+move_left={
+"deadzone": 0.5,
+"events": []
+}
+move_right={
+"deadzone": 0.5,
+"events": []
+}
+move_up={
+"deadzone": 0.5,
+"events": []
+}
+move_down={
+"deadzone": 0.5,
+"events": []
+}
+crouch={
+"deadzone": 0.5,
+"events": []
+}
 
 [rendering]
 

@@ -13,7 +13,7 @@ public partial class new_script : Node
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        if (Input.IsActionPressed(""))
+        if (Input.IsActionPressed(InputAction.Jump))
         {
 
         }
