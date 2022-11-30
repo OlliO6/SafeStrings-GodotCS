@@ -61,8 +61,8 @@ public class InputActionsWriter
         if (project.HasSection("input"))
             actionNames.AddRange(project.GetSectionKeys("input"));
 
-        StringBuilder sb = new();
-        sb.Append("namespace SafeStrings;\n\n")
+        var sb = new StringBuilder()
+            .Append("namespace SafeStrings;\n\n")
             .Append("using Godot;\n\n")
             .Append("public static partial class InputAction\n")
             .Append("{\n");

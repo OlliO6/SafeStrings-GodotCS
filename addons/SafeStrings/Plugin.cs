@@ -10,6 +10,7 @@ public partial class Plugin : EditorPlugin
     public static Plugin Instance { get; private set; }
 
     private InputActionsWriter inputActionsWatcher;
+    private ResWriter resWriter;
 
     public override void _EnterTree()
     {
@@ -19,6 +20,9 @@ public partial class Plugin : EditorPlugin
 
         inputActionsWatcher = new();
         inputActionsWatcher.Start();
+
+        resWriter = new();
+        resWriter.Start();
     }
 
     public override void _ExitTree()
@@ -28,6 +32,9 @@ public partial class Plugin : EditorPlugin
 
         inputActionsWatcher?.Stop();
         inputActionsWatcher = null;
+
+        resWriter?.Stop();
+        resWriter = null;
     }
 
     public override void _Process(double delta)
@@ -43,11 +50,15 @@ public partial class Plugin : EditorPlugin
     {
         inputActionsWatcher = new();
         inputActionsWatcher.Start();
+
+        resWriter = new();
+        resWriter.Start();
     }
 
     private void Update()
     {
         inputActionsWatcher?.Update();
+        resWriter?.Update();
     }
 }
 #endif

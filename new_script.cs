@@ -15,7 +15,7 @@ public partial class new_script : Node
     {
         if (Input.IsActionPressed(InputAction.Jump))
         {
-
+            GD.Load<PackedScene>(Res.node_2d_tscn);
         }
     }
 }
