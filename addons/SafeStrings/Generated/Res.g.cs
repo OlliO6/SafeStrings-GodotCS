@@ -4,11 +4,16 @@ using Godot;
 
 public static class Res
 {
-    public static readonly StringName node_2d_tscn = "res://node_2d.tscn";
-    public static class one_folder
+    public static class Examples
     {
-        public static class Stuff
+        public static readonly StringName InputActions_cs = "res://Examples/InputActions.cs";
+        public static readonly StringName Resources_cs = "res://Examples/Resources.cs";
+        public static class Items
         {
+            public static class Coin
+            {
+                public static readonly StringName coin_tscn = "res://Examples/Items/Coin/coin.tscn";
+            }
         }
     }
 }
