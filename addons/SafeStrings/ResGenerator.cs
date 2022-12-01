@@ -1,8 +1,6 @@
 #if TOOLS
 namespace SafeStrings.Editor;
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +13,7 @@ public class ResGenerator
     public void Start()
     {
         watcher = new FileSystemWatcher();
-        watcher.Path = ProjectSettings.GlobalizePath("res://");
+        watcher.Path = Settings.GlobalRootPath;
         watcher.EnableRaisingEvents = true;
         watcher.IncludeSubdirectories = true;
 
@@ -28,9 +26,27 @@ public class ResGenerator
                                 | NotifyFilters.Security
                                 | NotifyFilters.Size;
 
-        watcher.Created += (_, _) => Update();
-        watcher.Deleted += (_, _) => Update();
-        watcher.Renamed += (_, _) => Update();
+        watcher.Created += OnSomethingChanged;
+        watcher.Deleted += OnSomethingChanged;
+        watcher.Renamed += OnSomethingChanged;
+
+        Update();
+    }
+
+    private void OnSomethingChanged(object sender, FileSystemEventArgs e)
+    {
+        var relativePath = e.Name.Replace('\\', '/');
+        var name = e.Name.GetFile();
+
+        // make sure nothing starts with '.'
+        if (name.StartsWith('.') || e.Name.StartsWith('.') || relativePath.Contains("/."))
+            return;
+
+        var extension = name.GetExtension();
+
+        if (extension != "" && extension != name && Settings.ExcludedExtensions.Any(excludedExt => extension == excludedExt) ||
+            Settings.ExcludedFolers.Any(excludedPath => relativePath.StartsWith(excludedPath)))
+            return;
 
         Update();
     }
@@ -60,12 +76,15 @@ public class ResGenerator
 
     private void AppendDir(StringBuilder sb, DirAccess dir, string indent)
     {
-        dir.IncludeHidden = false;
-        dir.IncludeNavigational = false;
-
         foreach (var file in dir.GetFiles())
         {
             if (file.StartsWith('.'))
+                continue;
+
+            var extension = file.GetExtension();
+
+            if (extension != "" && extension != file &&
+                Settings.ExcludedExtensions.Any(excludedExt => extension == excludedExt))
                 continue;
 
             sb.Append(indent)
@@ -81,6 +100,11 @@ public class ResGenerator
             if (subDir.StartsWith('.'))
                 continue;
 
+            var pathToSubDir = dir.GetCurrentDir().PathJoin(subDir);
+
+            if (Settings.ExcludedFolers.Any(excludedPath => pathToSubDir == "res://" + excludedPath))
+                continue;
+
             sb.Append(indent)
                 .Append("public static class ")
                 .Append(((char.IsLetter(subDir.First()) || subDir.StartsWith('_')) ? subDir : subDir.Insert(0, "_")).Replace('.', '_').Replace(' ', '_'))
@@ -88,7 +112,7 @@ public class ResGenerator
                 .Append(indent)
                 .Append("{\n");
 
-            AppendDir(sb, DirAccess.Open(dir.GetCurrentDir().PathJoin(subDir)), indent + "    ");
+            AppendDir(sb, DirAccess.Open(pathToSubDir), indent + "    ");
 
             sb.Append(indent)
                 .Append("}\n");

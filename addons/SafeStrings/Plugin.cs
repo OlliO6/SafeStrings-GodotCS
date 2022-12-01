@@ -17,6 +17,7 @@ public partial class Plugin : EditorPlugin
         Instance = this;
 
         AddToolMenuItem("Update SafeStrings", new Callable(this, MethodName.Update));
+        Settings.InitSettings();
 
         inputActionsGen = new();
         inputActionsGen.Start();
