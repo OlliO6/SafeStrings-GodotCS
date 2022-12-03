@@ -87,11 +87,17 @@ public class ResGenerator
                 Settings.ExcludedExtensions.Any(excludedExt => extension == excludedExt))
                 continue;
 
+            string filePath = dir.GetCurrentDir().PathJoin(file);
+            string fileType = Plugin.GetFileType(filePath);
+
             sb.Append(indent)
-                .Append("public static readonly StringName ")
+                .Append("public static readonly ResourcePath")
+                .Append("<")
+                .Append(fileType)
+                .Append("> ")
                 .Append(((char.IsLetter(file.First()) || file.StartsWith('_')) ? file : file.Insert(0, "_")).Replace('.', '_').Replace(' ', '_'))
                 .Append(" = \"")
-                .Append(dir.GetCurrentDir().PathJoin(file))
+                .Append(filePath)
                 .Append("\";\n");
         }
 

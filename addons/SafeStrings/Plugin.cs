@@ -47,6 +47,11 @@ public partial class Plugin : EditorPlugin
         }
     }
 
+    public static string GetFileType(string path)
+    {
+        return $"Godot.{Instance.GetEditorInterface().GetResourceFilesystem().GetFileType(path)}";
+    }
+
     private void OnBuilded()
     {
         inputActionsGen = new();
