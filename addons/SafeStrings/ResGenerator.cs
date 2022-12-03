@@ -61,7 +61,6 @@ public class ResGenerator
     {
         var sb = new StringBuilder()
             .Append("namespace SafeStrings;\n\n")
-            .Append("using Godot;\n\n")
             .Append("public static class Res\n")
             .Append("{\n");
 
