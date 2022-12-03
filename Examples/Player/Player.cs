@@ -1,10 +1,18 @@
 using System;
 using Godot;
 using SafeStrings;
+using Rel = SafeStrings.Res.Examples.Player;
 
-// Example of how the InputAction class can be used
-public partial class InputActions : Node
+public partial class Player : Node
 {
+    private static PackedScene playerScene = GD.Load<PackedScene>(Rel.player_tscn);
+    private static PackedScene coinScene = GD.Load<PackedScene>(Res.Examples.Items.Coin.coin_tscn);
+
+    public static Player NewPlayer()
+    {
+        return playerScene.Instantiate<Player>();
+    }
+
     public override void _Process(double delta)
     {
         var horizontalInput = Input.GetAxis(InputAction.MoveLeft, InputAction.MoveDown);
@@ -14,22 +22,9 @@ public partial class InputActions : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsEcho())
-            return;
-
         if (@event.IsActionPressed(InputAction.Jump))
         {
             // Jump();
-            return;
-        }
-        if (@event.IsAction(InputAction.Crouch))
-        {
-            if (@event.IsPressed())
-            {
-                // StartCrouch();
-                return;
-            }
-            // StopCrouch():
             return;
         }
     }
