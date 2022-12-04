@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Godot;
 
 public class ResourcePath<T>
@@ -6,12 +8,34 @@ public class ResourcePath<T>
     private string _path;
     private T _value;
 
-    public T Value => _value;
+    public T Value => _value ??= GD.Load<T>(_path);
 
     public ResourcePath(string path)
     {
         _path = path;
-        _value = GD.Load<T>(_path);
+    }
+
+    public void Preload() => _value = GD.Load<T>(_path);
+
+    public async Task PreloadAsync(int updateDelayMSec = 50, bool useSubThreads = false)
+    {
+        if (_value != null)
+            return;
+
+        ResourceLoader.LoadThreadedRequest(this);
+
+        while (ResourceLoader.LoadThreadedGetStatus(this) == ResourceLoader.ThreadLoadStatus.InProgress)
+        {
+            await Task.Delay(updateDelayMSec);
+        }
+
+        if (ResourceLoader.LoadThreadedGetStatus(this) != ResourceLoader.ThreadLoadStatus.Loaded)
+        {
+            GD.PushError($"Resource could not be loaded. Path: '{_path}', Error: {ResourceLoader.LoadThreadedGetStatus(this)}");
+            return;
+        }
+
+        _value = ResourceLoader.LoadThreadedGet(this) as T;
     }
 
     public static implicit operator string(ResourcePath<T> from) => from._path;
