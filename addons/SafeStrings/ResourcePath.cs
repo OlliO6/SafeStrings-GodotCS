@@ -40,4 +40,5 @@ public class ResourcePath<T>
 
     public static implicit operator string(ResourcePath<T> from) => from._path;
     public static implicit operator ResourcePath<T>(string from) => new ResourcePath<T>(from);
+    public static implicit operator T(ResourcePath<T> from) => from.Value;
 }
