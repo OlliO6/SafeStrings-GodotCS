@@ -5,12 +5,20 @@ using Rel = SafeStrings.Res.Examples.Player;
 
 public partial class Player : Node
 {
-    private static PackedScene playerScene = GD.Load<PackedScene>(Rel.player_tscn);
-    private static PackedScene coinScene = GD.Load<PackedScene>(Res.Examples.Items.Coin.coin_tscn);
+    // Prefer second way of getting coin scene because it caches and only loads once per game
+    private static PackedScene coinScene1 = GD.Load<PackedScene>(Res.Examples.Items.Coin.coin_tscn);
+    private static PackedScene coinScene2 = Res.Examples.Items.Coin.coin_tscn.Value;
 
-    public static Player NewPlayer()
+    public static Player Instantiate()
     {
-        return playerScene.Instantiate<Player>();
+        // Relative to folder containing script.
+        return Rel.player_tscn.Value.Instantiate<Player>();
+    }
+
+    public override void _Ready()
+    {
+        // Preloads everything in the folder or subfolder
+        Res.Preload();
     }
 
     public override void _Process(double delta)
