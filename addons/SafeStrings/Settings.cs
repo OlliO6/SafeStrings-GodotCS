@@ -20,6 +20,7 @@ public static class Settings
     {
         "tmp",
         "TMP",
+        "import",
         "godot",
         "csproj",
         "sln"
