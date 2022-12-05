@@ -9,33 +9,66 @@ public partial class Plugin : EditorPlugin
 {
     public static Plugin Instance { get; private set; }
 
-    private InputActionsGenerators inputActionsGen;
-    private ResGenerator resGen;
+    private const int UpdateAllToolItemId = 1, GenerateRelUsingToolItemId = 2;
+
+    private PopupMenu _toolMenu;
+
+    private InputActionsGenerators _inputActionsGen;
+    private ResGenerator _resGen;
 
     public override void _EnterTree()
     {
         Instance = this;
 
-        AddToolMenuItem("Update SafeStrings", new Callable(this, MethodName.Update));
+        AddToolSubmenuItem("SafeStrings", _toolMenu = new() { });
+
+        _toolMenu.AddItem("Update All", UpdateAllToolItemId);
+        _toolMenu.AddItem("Generate Rel Using", GenerateRelUsingToolItemId);
+        _toolMenu.SetItemShortcut(1, new Shortcut()
+        {
+            Events = new()
+            {
+                new InputEventKey()
+                {
+                    CtrlPressed=true,
+                    Keycode = Key.R
+                }
+            }
+        }, true);
+
+        _toolMenu.IdPressed += id =>
+        {
+            switch (id)
+            {
+                case UpdateAllToolItemId:
+                    Update();
+                    break;
+
+                case GenerateRelUsingToolItemId:
+                    GD.Print("Gen Rel");
+                    break;
+            }
+        };
+
         Settings.InitSettings();
 
-        inputActionsGen = new();
-        inputActionsGen.Start();
+        _inputActionsGen = new();
+        _inputActionsGen.Start();
 
-        resGen = new();
-        resGen.Start();
+        _resGen = new();
+        _resGen.Start();
     }
 
     public override void _ExitTree()
     {
         Instance = null;
-        RemoveToolMenuItem("Update SafeStrings");
+        RemoveToolMenuItem("SafeStrings");
 
-        inputActionsGen?.Stop();
-        inputActionsGen = null;
+        _inputActionsGen?.Stop();
+        _inputActionsGen = null;
 
-        resGen?.Stop();
-        resGen = null;
+        _resGen?.Stop();
+        _resGen = null;
     }
 
     public override void _Process(double delta)
@@ -54,17 +87,17 @@ public partial class Plugin : EditorPlugin
 
     private void OnBuilded()
     {
-        inputActionsGen = new();
-        inputActionsGen.Start();
+        _inputActionsGen = new();
+        _inputActionsGen.Start();
 
-        resGen = new();
-        resGen.Start();
+        _resGen = new();
+        _resGen.Start();
     }
 
     private void Update()
     {
-        inputActionsGen?.Update();
-        resGen?.Update();
+        _inputActionsGen?.Update();
+        _resGen?.Update();
     }
 }
 #endif
