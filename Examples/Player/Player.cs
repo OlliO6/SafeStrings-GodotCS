@@ -17,12 +17,6 @@ public partial class Player : Node
         return ((PackedScene)Rel.player_tscn).Instantiate<Player>();
     }
 
-    public override void _Ready()
-    {
-        // Preloads everything in the folder or subfolder
-        Res.Preload();
-    }
-
     public override void _Process(double delta)
     {
         var horizontalInput = Input.GetAxis(InputAction.MoveLeft, InputAction.MoveDown);

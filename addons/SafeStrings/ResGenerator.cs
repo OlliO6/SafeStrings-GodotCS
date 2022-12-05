@@ -109,7 +109,6 @@ public class ResGenerator
 
         AddFiles(validFileNames);
         AddDirectories(validDirNames);
-        AddPreloadMethods();
 
         void AddFiles(string[] validFileNames)
         {
@@ -146,106 +145,6 @@ public class ResGenerator
                 sb.Append(indent)
                     .Append("}\n");
             }
-        }
-
-        void AddPreloadMethods()
-        {
-            string inMethodIndent = indent + "    ";
-
-            // Add Preload Method
-            sb.Append(indent)
-                .Append("public static void Preload()\n")
-                .Append(indent)
-                .Append("{\n");
-
-            for (int i = 0; i < fileVarNames.Length; i++)
-            {
-                sb.Append(inMethodIndent)
-                    .Append(fileVarNames[i])
-                    .Append(".Preload();\n");
-            }
-
-            for (int i = 0; i < dirClassNames.Length; i++)
-            {
-                sb.Append(inMethodIndent)
-                    .Append(dirClassNames[i])
-                    .Append(".Preload();\n");
-            }
-
-            sb.Append(indent)
-                .Append("}\n");
-
-            // Add PreloadAsync Method
-            sb.Append(indent)
-                .Append("public static System.Threading.Tasks.Task PreloadAsync(bool parallel, int updateDelayMSec = 50, bool useSubThreads = false)\n")
-                .Append(indent)
-                .Append("{\n")
-                .Append(inMethodIndent);
-
-            // Parallel
-            sb.Append("if (parallel)\n")
-                .Append(inMethodIndent)
-                .Append("    return System.Threading.Tasks.Task.Run(() => System.Threading.Tasks.Task.WaitAll(");
-
-            for (int i = 0; i < fileVarNames.Length; i++)
-            {
-                if (i != 0)
-                {
-                    sb.Append(", ");
-                }
-
-                sb.Append("\n");
-
-                sb.Append(inMethodIndent)
-                    .Append("        ")
-                    .Append(fileVarNames[i])
-                    .Append(".PreloadAsync(updateDelayMSec, useSubThreads)");
-            }
-
-            for (int i = 0; i < dirClassNames.Length; i++)
-            {
-                if (i != 0 || fileVarNames.Length > 0)
-                {
-                    sb.Append(", ");
-                }
-
-                sb.Append("\n");
-
-                sb.Append(inMethodIndent)
-                    .Append("        ")
-                    .Append(dirClassNames[i])
-                    .Append(".PreloadAsync(parallel, updateDelayMSec, useSubThreads)");
-            }
-
-            sb.Append("));\n");
-
-            // Serial
-            sb.Append(inMethodIndent)
-                .Append("return System.Threading.Tasks.Task.Run(async () =>\n")
-                .Append(inMethodIndent)
-                .Append("{\n");
-
-            for (int i = 0; i < fileVarNames.Length; i++)
-            {
-                sb.Append(inMethodIndent)
-                    .Append("    await ")
-                    .Append(fileVarNames[i])
-                    .Append(".PreloadAsync(updateDelayMSec, useSubThreads);\n");
-            }
-
-            for (int i = 0; i < dirClassNames.Length; i++)
-            {
-                sb.Append(inMethodIndent)
-                    .Append("    await ")
-                    .Append(dirClassNames[i])
-                    .Append(".PreloadAsync(parallel, updateDelayMSec, useSubThreads);\n");
-            }
-
-            sb.Append(inMethodIndent)
-                .Append("});\n");
-
-            sb.Append(indent)
-                .Append("}\n");
         }
     }
 
