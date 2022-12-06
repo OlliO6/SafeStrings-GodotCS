@@ -7,7 +7,7 @@ public partial class Player : Node
 {
     // Prefer second way of getting coin scene because it caches and only loads once per game
     private static PackedScene coinScene1 = GD.Load<PackedScene>(Res.Examples.Items.Coin.coin_tscn);
-    private static PackedScene coinScene2 = Res.Examples.Items.Coin.coin_tscn /*.Value*/;
+    private static PackedScene coinScene2 = Res.Examples.Items.Coin.coin_tscn /*.Value*/ ;
 
     public static Player Instantiate()
     {
@@ -29,7 +29,6 @@ public partial class Player : Node
         if (@event.IsActionPressed(InputAction.Jump))
         {
             // Jump();
-            return;
         }
     }
 }
