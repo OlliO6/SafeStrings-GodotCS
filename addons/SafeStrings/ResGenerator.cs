@@ -148,7 +148,7 @@ public class ResGenerator
         }
     }
 
-    private string ConvertNameToCSName(string filespaceName)
+    public static string ConvertNameToCSName(string filespaceName)
         => ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName.Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
 }
 

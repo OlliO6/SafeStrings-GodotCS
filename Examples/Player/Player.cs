@@ -1,7 +1,7 @@
+﻿using Rel = SafeStrings.Res.Examples.Player;
 using System;
 using Godot;
 using SafeStrings;
-using Rel = SafeStrings.Res.Examples.Player;
 
 public partial class Player : Node
 {

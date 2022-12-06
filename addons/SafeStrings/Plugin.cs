@@ -20,7 +20,7 @@ public partial class Plugin : EditorPlugin
     {
         Instance = this;
 
-        AddToolSubmenuItem("SafeStrings", _toolMenu = new() { });
+        AddToolSubmenuItem("SafeStrings", _toolMenu = new());
 
         _toolMenu.AddItem("Update All", UpdateAllToolItemId);
         _toolMenu.AddItem("Generate Rel Using", GenerateRelUsingToolItemId);
@@ -45,7 +45,7 @@ public partial class Plugin : EditorPlugin
                     break;
 
                 case GenerateRelUsingToolItemId:
-                    GD.Print("Gen Rel");
+                    RelUsingGenerator.GenerateRelUsing(GetEditorInterface().GetCurrentPath().TrimPrefix("res://"));
                     break;
             }
         };
