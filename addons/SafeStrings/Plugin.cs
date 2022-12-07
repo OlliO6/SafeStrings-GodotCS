@@ -82,7 +82,12 @@ public partial class Plugin : EditorPlugin
 
     public static string GetFileType(string path)
     {
-        return $"Godot.{Instance.GetEditorInterface().GetResourceFilesystem().GetFileType(path)}";
+        string gdType = Instance.GetEditorInterface().GetResourceFilesystem().GetFileType(path);
+
+        if (gdType is not "" and not null)
+            return $"Godot.{gdType}";
+
+        return "Godot.Resource";
     }
 
     private void OnBuilded()

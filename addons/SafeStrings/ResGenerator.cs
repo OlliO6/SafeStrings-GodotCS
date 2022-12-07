@@ -117,6 +117,18 @@ public class ResGenerator
                 string filePath = dir.GetCurrentDir().PathJoin(validFileNames[i]);
                 string fileType = Plugin.GetFileType(filePath);
 
+                if (fileType == "Godot.TextFile")
+                {
+                    sb.Append(indent)
+                        .Append("public static readonly string ")
+                        .Append(fileVarNames[i])
+                        .Append(" = \"")
+                        .Append(filePath)
+                        .Append("\";\n");
+
+                    continue;
+                }
+
                 sb.Append(indent)
                     .Append("public static readonly ResourcePath")
                     .Append("<")
