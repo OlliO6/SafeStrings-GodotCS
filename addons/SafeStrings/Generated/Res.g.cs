@@ -2,6 +2,7 @@
 
 public static class Res
 {
+    public static readonly string README_md = "res://README.md";
     public static class Examples
     {
         public static class Items
