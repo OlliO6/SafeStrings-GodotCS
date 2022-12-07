@@ -38,6 +38,8 @@ public class ResourcePath<T>
         _value = ResourceLoader.LoadThreadedGet(this) as T;
     }
 
+    public override string ToString() => _path;
+
     public static implicit operator string(ResourcePath<T> from) => from._path;
     public static implicit operator ResourcePath<T>(string from) => new ResourcePath<T>(from);
     public static implicit operator T(ResourcePath<T> from) => from.Value;
