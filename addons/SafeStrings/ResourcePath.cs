@@ -7,8 +7,11 @@ public class ResourcePath<T>
 {
     private string _path;
     private T _value;
+    private WeakReference<T> _weakValue;
 
     public T Value => _value ??= GD.Load<T>(_path);
+
+    public WeakReference<T> WeakValue => _weakValue ??= new WeakReference<T>(GD.Load<T>(_path));
 
     public ResourcePath(string path)
     {
@@ -36,6 +39,12 @@ public class ResourcePath<T>
         }
 
         _value = ResourceLoader.LoadThreadedGet(this) as T;
+    }
+
+    public void ReleaseValue()
+    {
+        _value = null;
+        _weakValue = null;
     }
 
     public override string ToString() => _path;
