@@ -1,5 +1,6 @@
 namespace SafeStrings.Editor;
 
+using System.Linq;
 using Godot;
 
 public static class Utils
@@ -11,5 +12,12 @@ public static class Utils
             from.AddChild(childNodes[i]);
 
         return from;
+    }
+
+
+    public static string ConvertNameToCSName(string filespaceName)
+    {
+        return ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName
+            .Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
     }
 }
