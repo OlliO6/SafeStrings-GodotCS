@@ -12,7 +12,7 @@ public partial class Plugin : EditorPlugin
     private const int UpdateAllToolItemId = 1, GenerateRelUsingToolItemId = 2, AssociateSceneToScriptToolItemId = 3;
 
     private PopupMenu _toolMenu;
-
+    private ConfirmationDialog _sceneAssociateDialog;
     private InputActionsGenerators _inputActionsGen;
     private ResGenerator _resGen;
 
@@ -37,7 +37,7 @@ public partial class Plugin : EditorPlugin
             }
         }, true);
         _toolMenu.AddItem("Associate Scene To Script", AssociateSceneToScriptToolItemId);
-        _toolMenu.SetItemShortcut(1, new Shortcut()
+        _toolMenu.SetItemShortcut(2, new Shortcut()
         {
             Events = new()
             {
@@ -61,8 +61,62 @@ public partial class Plugin : EditorPlugin
                 case GenerateRelUsingToolItemId:
                     RelUsingGenerator.GenerateRelUsing(GetEditorInterface().GetCurrentPath().TrimPrefix("res://"));
                     break;
+
+                case AssociateSceneToScriptToolItemId:
+                    OpenSceneAssociateDialog();
+                    break;
             }
         };
+
+        _sceneAssociateDialog = new ConfirmationDialog()
+        {
+            Title = "Associate Scene To Script",
+            Theme = GetEditorInterface().GetBaseControl().Theme
+        }.WithChilds(
+            new PanelContainer().WithChilds(
+                new VBoxContainer()
+                {
+                    SizeFlagsVertical = (int)Control.SizeFlags.ExpandFill,
+                    SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                }.WithChilds(
+                    new HBoxContainer()
+                    {
+                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                    }.WithChilds(
+                        new Label()
+                        {
+                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            Text = "Scene Path:"
+                        },
+                        new LineEdit()
+                        {
+                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                        }
+                    ),
+                    new HBoxContainer()
+                    {
+                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                    }.WithChilds(
+                        new Label()
+                        {
+                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            Text = "CS Script Path:"
+                        },
+                        new LineEdit()
+                        {
+                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                        }
+                    )
+                )
+            )
+        );
+
+        AddChild(_sceneAssociateDialog);
+
+        _sceneAssociateDialog.Confirmed += () =>
+            {
+                GD.Print("Confirmed");
+            };
 
         Settings.InitSettings();
 
@@ -77,6 +131,8 @@ public partial class Plugin : EditorPlugin
     {
         Instance = null;
         RemoveToolMenuItem("SafeStrings");
+
+        _sceneAssociateDialog?.QueueFree();
 
         _inputActionsGen?.Stop();
         _inputActionsGen = null;
@@ -113,10 +169,16 @@ public partial class Plugin : EditorPlugin
         _resGen.Start();
     }
 
+    private void OpenSceneAssociateDialog()
+    {
+        _sceneAssociateDialog.PopupCenteredRatio(0.2f);
+    }
+
     private void Update()
     {
         _inputActionsGen?.Update();
         _resGen?.Update();
     }
 }
+
 #endif
