@@ -9,7 +9,7 @@ public partial class Plugin : EditorPlugin
 {
     public static Plugin Instance { get; private set; }
 
-    private const int UpdateAllToolItemId = 1, GenerateRelUsingToolItemId = 2;
+    private const int UpdateAllToolItemId = 1, GenerateRelUsingToolItemId = 2, AssociateSceneToScriptToolItemId = 3;
 
     private PopupMenu _toolMenu;
 
@@ -30,8 +30,22 @@ public partial class Plugin : EditorPlugin
             {
                 new InputEventKey()
                 {
-                    CtrlPressed=true,
+                    CtrlPressed = true,
+                    AltPressed = true,
                     Keycode = Key.R
+                }
+            }
+        }, true);
+        _toolMenu.AddItem("Associate Scene To Script", AssociateSceneToScriptToolItemId);
+        _toolMenu.SetItemShortcut(1, new Shortcut()
+        {
+            Events = new()
+            {
+                new InputEventKey()
+                {
+                    CtrlPressed = true,
+                    AltPressed = true,
+                    Keycode = Key.S
                 }
             }
         }, true);
