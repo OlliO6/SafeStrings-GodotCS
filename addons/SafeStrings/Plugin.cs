@@ -12,7 +12,7 @@ public partial class Plugin : EditorPlugin
     private const int UpdateAllToolItemId = 1, GenerateRelUsingToolItemId = 2, AssociateSceneToScriptToolItemId = 3;
 
     private PopupMenu _toolMenu;
-    private ConfirmationDialog _sceneAssociateDialog;
+    private AssociateSceneDialog _associateSceneDialog;
     private InputActionsGenerators _inputActionsGen;
     private ResGenerator _resGen;
 
@@ -63,60 +63,13 @@ public partial class Plugin : EditorPlugin
                     break;
 
                 case AssociateSceneToScriptToolItemId:
-                    OpenSceneAssociateDialog();
+                    _associateSceneDialog.Open();
                     break;
             }
         };
 
-        _sceneAssociateDialog = new ConfirmationDialog()
-        {
-            Title = "Associate Scene To Script",
-            Theme = GetEditorInterface().GetBaseControl().Theme
-        }.WithChilds(
-            new PanelContainer().WithChilds(
-                new VBoxContainer()
-                {
-                    SizeFlagsVertical = (int)Control.SizeFlags.ExpandFill,
-                    SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
-                }.WithChilds(
-                    new HBoxContainer()
-                    {
-                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
-                    }.WithChilds(
-                        new Label()
-                        {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
-                            Text = "Scene Path:"
-                        },
-                        new LineEdit()
-                        {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
-                        }
-                    ),
-                    new HBoxContainer()
-                    {
-                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
-                    }.WithChilds(
-                        new Label()
-                        {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
-                            Text = "CS Script Path:"
-                        },
-                        new LineEdit()
-                        {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
-                        }
-                    )
-                )
-            )
-        );
-
-        AddChild(_sceneAssociateDialog);
-
-        _sceneAssociateDialog.Confirmed += () =>
-            {
-                GD.Print("Confirmed");
-            };
+        AddChild(_associateSceneDialog = new());
+        _associateSceneDialog.Confirmed += OnAssociateSceneDialogConfirmed;
 
         Settings.InitSettings();
 
@@ -132,7 +85,7 @@ public partial class Plugin : EditorPlugin
         Instance = null;
         RemoveToolMenuItem("SafeStrings");
 
-        _sceneAssociateDialog?.QueueFree();
+        _associateSceneDialog?.QueueFree();
 
         _inputActionsGen?.Stop();
         _inputActionsGen = null;
@@ -146,7 +99,7 @@ public partial class Plugin : EditorPlugin
         if (Instance == null)
         {
             Instance = this;
-            OnBuilded();
+            CallDeferred(MethodName.OnBuilded);
         }
     }
 
@@ -162,6 +115,12 @@ public partial class Plugin : EditorPlugin
 
     private void OnBuilded()
     {
+        if (IsInstanceValid(_associateSceneDialog))
+            _associateSceneDialog.QueueFree();
+
+        AddChild(_associateSceneDialog = new());
+        _associateSceneDialog.Confirmed += OnAssociateSceneDialogConfirmed;
+
         _inputActionsGen = new();
         _inputActionsGen.Start();
 
@@ -169,9 +128,22 @@ public partial class Plugin : EditorPlugin
         _resGen.Start();
     }
 
-    private void OpenSceneAssociateDialog()
+    void OnAssociateSceneDialogConfirmed()
     {
-        _sceneAssociateDialog.PopupCenteredRatio(0.2f);
+        string scenePath = _associateSceneDialog.SelectedScenePath;
+        string scriptPath = _associateSceneDialog.SelectedScriptPath;
+
+        if (scenePath.GetExtension() != "tscn")
+        {
+            GD.PrintErr("Scene needs to be a tscn file.");
+            return;
+        }
+
+        if (scriptPath.GetExtension() != "cs")
+        {
+            GD.PrintErr("Script needs to be a cs file.");
+            return;
+        }
     }
 
     private void Update()
