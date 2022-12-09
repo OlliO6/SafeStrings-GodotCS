@@ -8,6 +8,12 @@
 
 config_version=5
 
+[SafeStrings]
+
+resources/scene_associations={
+"res://Examples/Player/player.tscn": "res://Examples/Player/Player.cs"
+}
+
 [application]
 
 config/name="SafeStringsCS"

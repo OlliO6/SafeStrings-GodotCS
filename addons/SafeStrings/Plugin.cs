@@ -138,12 +138,18 @@ public partial class Plugin : EditorPlugin
             GD.PrintErr("Scene needs to be a tscn file.");
             return;
         }
-
         if (scriptPath.GetExtension() != "cs")
         {
             GD.PrintErr("Script needs to be a cs file.");
             return;
         }
+
+        AddSceneAssiciation(scenePath, scriptPath);
+    }
+
+    public void AddSceneAssiciation(string scenePath, string scriptPath)
+    {
+        Settings.SceneAssociations[scenePath] = scriptPath;
     }
 
     private void Update()
