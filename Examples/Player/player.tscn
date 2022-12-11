@@ -4,3 +4,9 @@
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_jgnga")
+
+[node name="Node2D" type="Node2D" parent="."]
+editor_description = "dasdasdsadas"
+
+[node name="Node" type="Node2D" parent="Node2D"]
+editor_description = "dsavtgu"

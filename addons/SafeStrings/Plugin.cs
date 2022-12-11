@@ -15,6 +15,7 @@ public partial class Plugin : EditorPlugin
     private AssociateSceneDialog _associateSceneDialog;
     private InputActionsGenerators _inputActionsGen;
     private ResGenerator _resGen;
+    private SceneGenerator _sceneGen;
 
     public override void _EnterTree()
     {
@@ -55,7 +56,7 @@ public partial class Plugin : EditorPlugin
             switch (id)
             {
                 case UpdateAllToolItemId:
-                    Update();
+                    UpdateAll();
                     break;
 
                 case GenerateRelUsingToolItemId:
@@ -78,6 +79,9 @@ public partial class Plugin : EditorPlugin
 
         _resGen = new();
         _resGen.Start();
+
+        _sceneGen = new();
+        _sceneGen.Start();
     }
 
     public override void _ExitTree()
@@ -92,6 +96,9 @@ public partial class Plugin : EditorPlugin
 
         _resGen?.Stop();
         _resGen = null;
+
+        _sceneGen?.Stop();
+        _sceneGen = null;
     }
 
     public override void _Process(double delta)
@@ -126,6 +133,9 @@ public partial class Plugin : EditorPlugin
 
         _resGen = new();
         _resGen.Start();
+
+        _sceneGen = new();
+        _sceneGen.Start();
     }
 
     void OnAssociateSceneDialogConfirmed()
@@ -149,13 +159,15 @@ public partial class Plugin : EditorPlugin
 
     public void AddSceneAssiciation(string scenePath, string scriptPath)
     {
-        Settings.SceneAssociations[scenePath] = scriptPath;
+        Settings.AddSceneAssociation(scenePath, scriptPath);
+        _sceneGen.UpdateScene(scenePath);
     }
 
-    private void Update()
+    private void UpdateAll()
     {
         _inputActionsGen?.Update();
         _resGen?.Update();
+        _sceneGen?.UpdateAll();
     }
 }
 

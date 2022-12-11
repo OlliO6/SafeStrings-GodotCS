@@ -20,4 +20,11 @@ public static class Utils
         return ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName
             .Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
     }
+
+    public static string GetCsTypeFullNameFromScript(CSharpScript script)
+    {
+        GD.Print(script.SourceCode);
+
+        return "";
+    }
 }
