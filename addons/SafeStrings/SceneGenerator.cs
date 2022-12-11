@@ -4,6 +4,7 @@ namespace SafeStrings.Editor;
 using Godot;
 using System;
 using System.IO;
+using System.Text;
 
 public class SceneGenerator
 {
@@ -90,13 +91,12 @@ public class SceneGenerator
             GD.PrintErr($"Scene Associations: Path '{scenePath}' is not valid scene.");
             return;
         }
-        if (GD.Load(scriptPath) == null)
+        if (script == null)
         {
             GD.PrintErr($"Scene Associations: Path '{scenePath}' is not valid script.");
             return;
         }
-
-        GD.Print("Updating '", scenePath, "' \n", Utils.GetCsTypeFullNameFromScript(script), "\n\n\n");
+        Utils.GetCsTypeFromScript(script, out string classNamespace, out string className);
     }
 }
 
