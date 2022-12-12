@@ -96,7 +96,134 @@ public class SceneGenerator
             GD.PrintErr($"Scene Associations: Path '{scenePath}' is not valid script.");
             return;
         }
+
         Utils.GetCsTypeFromScript(script, out string classNamespace, out string className);
+
+        // Generate Scene Content
+        StringBuilder sceneBuilder = new();
+        StringBuilder uniqueSceneBuilder = new();
+
+        var sceneState = scene.GetState();
+
+        for (int i = 1; i < sceneState.GetNodeCount(); i++)
+        {
+            AppendNode(i);
+        }
+
+        // Generate Source
+        StringBuilder sourceBuilder = new();
+
+        if (classNamespace != "")
+            sourceBuilder.Append("namespace ")
+                .Append(classNamespace)
+                .AppendLine(";");
+
+        sourceBuilder.Append("partial class ")
+            .AppendLine(className)
+            .AppendLine("{");
+
+        // Add Scene
+        sourceBuilder.AppendLine("    public static class Scene\n    {")
+            .Append("        ")
+            .AppendLine(sceneBuilder.ToString().ReplaceLineEndings("\n        "));
+
+        // Add UniqueScene
+        sourceBuilder.AppendLine("        public static class Unique\n        {")
+            .Append("            ")
+            .AppendLine(uniqueSceneBuilder.ToString().ReplaceLineEndings("\n            "));
+
+        sourceBuilder.AppendLine("        }")
+            .AppendLine("    }");
+
+        sourceBuilder.AppendLine("}");
+
+        File.WriteAllText($"addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}.g.cs", sourceBuilder.ToString());
+
+        void AppendNode(int idx)
+        {
+            bool isUnique = false;
+            string type = "";
+
+            for (int i = 0; i < sceneState.GetNodePropertyCount(idx); i++)
+            {
+                string propName = sceneState.GetNodePropertyName(idx, i);
+
+                if (propName == "unique_name_in_owner")
+                {
+                    isUnique = true;
+                    continue;
+                }
+
+                if (propName == "script")
+                {
+                    type = Utils.GetCsFullNameFromScript((CSharpScript)sceneState.GetNodePropertyValue(idx, i));
+                    continue;
+                }
+            }
+
+            if (type == "")
+                type = "Godot." + sceneState.GetNodeType(idx);
+
+            string nodeName = sceneState.GetNodeName(idx);
+            string path = sceneState.GetNodePath(idx);
+            string pathToParent = ((string)sceneState.GetNodePath(idx, true)).TrimPrefix("./");
+            string[] pathSegments = pathToParent == "." ? new string[0] : pathToParent.Split('/');
+
+            foreach (string pathSegment in pathSegments)
+            {
+                sceneBuilder.Append("partial class ")
+                    .Append(pathSegment)
+                    .Append(" { ");
+            }
+
+            sceneBuilder.Append("public static partial class ")
+                .Append(nodeName)
+                .AppendLine("\n{");
+
+            sceneBuilder.Append("    public static SafeStrings.SceneNodePath<")
+                .Append(type)
+                .Append("> Path = \"")
+                .Append(path)
+                .AppendLine("\";");
+
+            sceneBuilder.Append("    public static ")
+                .Append(type)
+                .AppendLine(" Get(Godot.Node root) => Path.Get(root);");
+
+            sceneBuilder.Append("    public static ")
+                .Append(type)
+                .AppendLine(" GetCached(Godot.Node root) => Path.GetCached(root);");
+
+            for (int i = 0; i < pathSegments.Length; i++)
+            {
+                sceneBuilder.Append("}");
+            }
+
+            sceneBuilder.AppendLine("}");
+
+            if (!isUnique)
+                return;
+
+            uniqueSceneBuilder.Append("public static class ")
+                .Append(nodeName)
+                .AppendLine("\n{");
+
+            uniqueSceneBuilder.Append("    public static SafeStrings.SceneNodePath<")
+                .Append(type)
+                .Append("> Path = ")
+                .Append(path.TrimPrefix("./").Replace('/', '.'))
+                .AppendLine(".Path;");
+
+            uniqueSceneBuilder.Append("    public static ")
+                .Append(type)
+                .AppendLine(" Get(Godot.Node root) => Path.Get(root);");
+
+            uniqueSceneBuilder.Append("    public static ")
+                .Append(type)
+                .AppendLine(" GetCached(Godot.Node root) => Path.GetCached(root);");
+
+            uniqueSceneBuilder.AppendLine("}");
+        }
     }
 }
 

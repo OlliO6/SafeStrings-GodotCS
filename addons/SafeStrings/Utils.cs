@@ -22,6 +22,16 @@ public static class Utils
             .Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
     }
 
+    public static string GetCsFullNameFromScript(CSharpScript script)
+    {
+        GetCsTypeFromScript(script, out string @namespace, out string @class);
+
+        if (@namespace == "")
+            return @class;
+
+        return $"{@namespace}.{@class}";
+    }
+
     public static void GetCsTypeFromScript(CSharpScript script, out string @namespace, out string @class)
     {
         const string Namespace = "namespace ";
@@ -52,12 +62,13 @@ public static class Utils
             if (line.StartsWith(ClassBegin))
             {
                 @class = GetClass(line, fromBegin: true);
-                continue;
+                break;
             }
 
             if (line.Contains(" class "))
             {
                 @class = GetClass(line, fromBegin: false);
+                break;
             }
         }
 
