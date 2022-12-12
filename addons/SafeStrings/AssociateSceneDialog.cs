@@ -67,15 +67,17 @@ public partial class AssociateSceneDialog : ConfirmationDialog
 
     private void TryGetWantedFiles(out string scenePath, out string scriptPath)
     {
-        scenePath = Plugin.Instance.GetEditorInterface().GetEditedSceneRoot()?.SceneFilePath;
-        scriptPath = "";
+        Node root = Plugin.Instance.GetEditorInterface().GetEditedSceneRoot();
 
-        string selectedPath = Plugin.Instance.GetEditorInterface().GetCurrentPath();
-
-        if (selectedPath.EndsWith(".cs"))
+        if (root == null)
         {
-            scriptPath = selectedPath;
+            scenePath = "";
+            scriptPath = "";
+            return;
         }
+
+        scenePath = root.SceneFilePath;
+        scriptPath = (root.GetScript().Obj as CSharpScript)?.ResourcePath;
     }
 }
 
