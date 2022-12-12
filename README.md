@@ -49,5 +49,23 @@ public static Player NewPlayer()
 }
 ```
 
-🪵 Node Paths (not yet implemented):
+🪵 Node Paths:
 ----------
+
+You can associate a scene to a script using `Project/Tools/SafeStrings/Associate Scene to script`
+Or press `ctrl + alt + s`.
+
+Than a window will popup where you associate a scene to a script.
+By default the scene field will be set to the currently open scene and the script to the script attached to the root node.
+
+When a scene is associated the plugin will add a static class called `Scene`.
+
+```c#
+public override void _Process(double delta)
+{
+
+}
+```
+
+
+
