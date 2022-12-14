@@ -1,6 +1,58 @@
-[gd_scene load_steps=2 format=3 uid="uid://cc0upxqkajqf7"]
+[gd_scene load_steps=7 format=3 uid="uid://cc0upxqkajqf7"]
 
 [ext_resource type="Script" path="res://Examples/Player/Player.cs" id="1_jgnga"]
 
+[sub_resource type="Gradient" id="Gradient_0dsef"]
+colors = PackedColorArray(0.204353, 0.690082, 0.246906, 1, 0.537678, 0.103481, 0.683294, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_u03lq"]
+noise_type = 2
+frequency = 0.027
+cellular_distance_function = 2
+cellular_jitter = 50.098
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_amplitude = 36.177
+domain_warp_frequency = 0.1
+domain_warp_fractal_type = 0
+domain_warp_fractal_gain = 1.061
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j7xc0"]
+width = 128
+height = 128
+color_ramp = SubResource("Gradient_0dsef")
+noise = SubResource("FastNoiseLite_u03lq")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ttx0l"]
+size = Vector2(128, 128)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pxj4d"]
+
 [node name="Player" type="Node2D"]
+modulate = Color(0.14902, 0.584314, 0.466667, 1)
 script = ExtResource("1_jgnga")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.988235, 0.988235, 0.988235, 1)
+position = Vector2(415.25, 209.25)
+texture = SubResource("NoiseTexture2D_j7xc0")
+
+[node name="Area2D" type="Area2D" parent="Sprite2D"]
+modulate = Color(0.988235, 0.988235, 0.988235, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/Area2D"]
+visible = false
+shape = SubResource("RectangleShape2D_ttx0l")
+debug_color = Color(0, 0.847059, 0.988235, 0.419608)
+
+[node name="Node" type="Node" parent="Sprite2D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D/Node"]
+unique_name_in_owner = true
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_pxj4d")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="Sprite2D/Node"]
+anim_player = NodePath("../AnimationPlayer")

@@ -1,13 +1,21 @@
-﻿using Rel = SafeStrings.Res.Examples.Player;
+using Rel = SafeStrings.Res.Examples.Player;
 using System;
 using Godot;
 using SafeStrings;
 
+// Note: Player scene has a really weird structure (for example showcase purpose)
+
 public partial class Player : Node
 {
+    public const float MovementSpeed = 400;
+
     // Prefer second way of getting coin scene because it caches and only loads once per game
     private static PackedScene coinScene1 = GD.Load<PackedScene>(Res.Examples.Items.Coin.coin_tscn);
-    private static PackedScene coinScene2 = Res.Examples.Items.Coin.coin_tscn /*.Value*/ ;
+    private static PackedScene coinScene2 = Res.Examples.Items.Coin.coin_tscn /*.Value (the same)*/ ;
+
+    // Reference to use often in script (a bit using like @onready in gdscript)
+    public Sprite2D Sprite => Scene.Sprite2D.GetCached(this);
+    public AnimationTree AnimTree => Scene.Sprite2D.Node.AnimationTree.GetCached(this);
 
     public static Player Instantiate()
     {
@@ -17,11 +25,20 @@ public partial class Player : Node
         return ((PackedScene)Rel.player_tscn).Instantiate<Player>();
     }
 
+    public override void _Ready()
+    {
+        // No need to cache since we're only getting it once
+        Scene.Unique.AnimationPlayer.Get(this).AnimationFinished += animation =>
+        {
+            GD.Print("Animation ", animation, " finished.");
+        };
+    }
+
     public override void _Process(double delta)
     {
-        var horizontalInput = Input.GetAxis(InputAction.MoveLeft, InputAction.MoveDown);
+        var horizontalInput = Input.GetAxis(InputAction.MoveLeft, InputAction.MoveRight);
 
-        // Move(horizontalInput, delta);
+        Sprite.Position += (float)delta * MovementSpeed * horizontalInput * Vector2.Right;
     }
 
     public override void _UnhandledInput(InputEvent @event)

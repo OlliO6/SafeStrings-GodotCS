@@ -1,6 +1,7 @@
 #if TOOLS
 namespace SafeStrings.Editor;
 
+using System;
 using Godot;
 using Godot.Collections;
 
@@ -10,6 +11,7 @@ public static class Settings
 
     private const string ExcludedFolersPath = "SafeStrings/resources/excluded_folers";
     private const string ExcludedExtensionsPath = "SafeStrings/resources/excluded_formats";
+    private const string SceneAssociationsPath = "SafeStrings/scenes/scene_associations";
 
     public static Array<string> ExcludedFolers => GetOrAddSetting(ExcludedFolersPath, new Array<string>
     {
@@ -26,10 +28,14 @@ public static class Settings
         "sln"
     }).AsGodotArray<string>();
 
+    public static Dictionary<string, string> SceneAssociations => GetOrAddSetting(SceneAssociationsPath,
+        new Dictionary<string, string>()).AsGodotDictionary<string, string>();
+
     public static void InitSettings()
     {
         _ = ExcludedFolers;
         _ = ExcludedExtensions;
+        _ = SceneAssociations;
     }
 
     private static Variant GetOrAddSetting(string path, Variant @default)
@@ -48,5 +54,13 @@ public static class Settings
 
         return @default;
     }
+
+    public static void AddSceneAssociation(string scenePath, string scriptPath)
+    {
+        var newDict = Settings.SceneAssociations.Duplicate();
+        newDict[scenePath] = scriptPath;
+        ProjectSettings.SetSetting(SceneAssociationsPath, newDict);
+    }
 }
+
 #endif

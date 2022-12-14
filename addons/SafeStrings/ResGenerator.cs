@@ -1,8 +1,6 @@
 #if TOOLS
 namespace SafeStrings.Editor;
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -93,8 +91,8 @@ public class ResGenerator
             return true;
         }).ToArray();
 
-        string[] fileVarNames = validFileNames.Select<string, string>((fileName, _) => ConvertNameToCSName(fileName)).ToArray();
-        string[] dirClassNames = validDirNames.Select<string, string>((dirName, _) => ConvertNameToCSName(dirName)).ToArray();
+        string[] fileVarNames = validFileNames.Select<string, string>((fileName, _) => Utils.ConvertNameToCSName(fileName)).ToArray();
+        string[] dirClassNames = validDirNames.Select<string, string>((dirName, _) => Utils.ConvertNameToCSName(dirName)).ToArray();
 
         AddFiles(validFileNames);
         AddDirectories(validDirNames);
@@ -148,9 +146,6 @@ public class ResGenerator
             }
         }
     }
-
-    public static string ConvertNameToCSName(string filespaceName)
-        => ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName.Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
 }
 
 #endif

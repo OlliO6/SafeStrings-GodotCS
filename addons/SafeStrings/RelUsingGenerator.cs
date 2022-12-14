@@ -57,7 +57,7 @@ public static class RelUsingGenerator
             foreach (string folder in pathToFolder.Split('/'))
             {
                 sb.Append(".")
-                    .Append(ResGenerator.ConvertNameToCSName(folder));
+                    .Append(Utils.ConvertNameToCSName(folder));
             }
 
             return sb.ToString();
