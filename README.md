@@ -37,7 +37,7 @@ Res.Enemies.zombie_tscn.Value.Instantiate();
 #### Relative Paths:
 If you have a file structure where for example the player script is in the same folder as the player scene, this feature will be useful.
 
-Select your script and click on `Project/Tools/SafeStrings/Generate Rel Using` or press `ctrl + r` and this line of code will get generated:
+Select your script and click on `Project/Tools/SafeStrings/Generate Rel Using` or press `ctrl + alt + r` and this line of code will get generated:
 ```c#
 using Rel = SafeStrings.Res.Examples.Player;
 ```
