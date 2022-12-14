@@ -16,7 +16,7 @@ public partial class Plugin : EditorPlugin
     private InputActionsGenerators _inputActionsGen;
     private ResGenerator _resGen;
 
-    public override void _EnterTree()
+    public override async void _EnterTree()
     {
         Instance = this;
 
@@ -41,7 +41,7 @@ public partial class Plugin : EditorPlugin
             switch (id)
             {
                 case UpdateAllToolItemId:
-                    Update();
+                    UpdateAll();
                     break;
 
                 case GenerateRelUsingToolItemId:
@@ -53,10 +53,13 @@ public partial class Plugin : EditorPlugin
         Settings.InitSettings();
 
         _inputActionsGen = new();
-        _inputActionsGen.Start();
-
         _resGen = new();
-        _resGen.Start();
+
+        // Wait to frames so file system can initialize or something like that
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        UpdateAll();
     }
 
     public override void _ExitTree()
@@ -93,13 +96,11 @@ public partial class Plugin : EditorPlugin
     private void OnBuilded()
     {
         _inputActionsGen = new();
-        _inputActionsGen.Start();
-
         _resGen = new();
-        _resGen.Start();
+        CallDeferred(MethodName.UpdateAll);
     }
 
-    private void Update()
+    private void UpdateAll()
     {
         _inputActionsGen?.Update();
         _resGen?.Update();

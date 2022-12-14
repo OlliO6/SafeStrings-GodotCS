@@ -12,7 +12,7 @@ public class InputActionsGenerators
 {
     private FileSystemWatcher watcher;
 
-    public void Start()
+    public InputActionsGenerators()
     {
         watcher = new FileSystemWatcher();
         watcher.Path = ProjectSettings.GlobalizePath("res://");
@@ -20,18 +20,7 @@ public class InputActionsGenerators
         watcher.EnableRaisingEvents = true;
         watcher.IncludeSubdirectories = false;
 
-        watcher.NotifyFilter = NotifyFilters.Attributes
-                                | NotifyFilters.CreationTime
-                                | NotifyFilters.DirectoryName
-                                | NotifyFilters.FileName
-                                | NotifyFilters.LastAccess
-                                | NotifyFilters.LastWrite
-                                | NotifyFilters.Security
-                                | NotifyFilters.Size;
-
         watcher.Changed += OnProjectChanged;
-
-        Update();
     }
 
     private void OnProjectChanged(object sender, FileSystemEventArgs e)

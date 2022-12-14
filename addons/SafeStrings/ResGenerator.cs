@@ -12,27 +12,16 @@ public class ResGenerator
 {
     private FileSystemWatcher watcher;
 
-    public void Start()
+    public ResGenerator()
     {
         watcher = new FileSystemWatcher();
         watcher.Path = Settings.GlobalRootPath;
         watcher.EnableRaisingEvents = true;
         watcher.IncludeSubdirectories = true;
 
-        watcher.NotifyFilter = NotifyFilters.Attributes
-                                | NotifyFilters.CreationTime
-                                | NotifyFilters.DirectoryName
-                                | NotifyFilters.FileName
-                                | NotifyFilters.LastAccess
-                                | NotifyFilters.LastWrite
-                                | NotifyFilters.Security
-                                | NotifyFilters.Size;
-
         watcher.Created += OnSomethingChanged;
         watcher.Deleted += OnSomethingChanged;
         watcher.Renamed += OnSomethingChanged;
-
-        Update();
     }
 
     private void OnSomethingChanged(object sender, FileSystemEventArgs e)
