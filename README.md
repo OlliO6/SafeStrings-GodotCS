@@ -56,16 +56,45 @@ You can associate a scene to a script using `Project/Tools/SafeStrings/Associate
 Or press `ctrl + alt + s`.
 
 Than a window will popup where you associate a scene to a script.
-By default the scene field will be set to the currently open scene and the script to the script attached to the root node.
+By default the scene field will be set to the currently open scene and the script to the one attached to the root node.
 
-When a scene is associated the plugin will add a static class called `Scene`.
+When a scene is associated the plugin will add a static class called `Scene` to the given script class.
+This class will have static subclasses that are recreating the scene structure (one subclass for every node).
+
+Every "Node" class will have a static property called `Path` wich is of the `SceneNodePath<T>` type.
+
+The `SceneNodePath<T>` class is a wrapper around the `NodePath` class.
+- `T` is the type of the node where the path. `GetType()` returns the type of `T`.
+- Implicity convertable to `NodePath`.
+- `Get(Node root)` method is similar to `Node.GetNode<T>(NodePath path)`.
+- `GetCached(Node root)` is like `Get` but will cache the result in a [ConditionalWeakTable](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.conditionalweaktable-2?view=net-7.0).
+
+Every 'Node' class will also have methods, `Get(Node root)` and `GetCached(Node root)`, these are just shortcuts for methods on `Path`.
+
+### Examples:
 
 ```c#
-public override void _Process(double delta)
-{
-
-}
+Scene.NodeName.ChildOfNodeName/*.Path*/.Get(this).SomeMethod();
+// Same as 
+this.GetNode<NodeType>("NodeName/ChildOfNodeName").SomeMethod();
 ```
 
+When you wanna use a Node more often (e.g. in the `_Process` function) it's a good practise to cache it.
+I always liked to use [lazy getters with the null-coalescing-operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator) instead of setting a node reference in the `_Ready()` function.
 
+It looked something like this:
+```c#
+private NodeType _myNode;
 
+public MyNode => _myNode ??= GetNode<NodeType>("Node/MyNode"); // Scene.Node.MyNode.Get(this);
+```
+But with this plugin I can just do this:
+```c#
+public MyNode => Scene.Node.MyNode.GetCached(this);
+```
+
+It's kind of like `@onready ... get_node` in gdscript but instead of assigning the field on ready it assigns it at the first use.
+
+Contributing:
+------------
+I'd love to see a PR.

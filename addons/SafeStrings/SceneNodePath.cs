@@ -27,6 +27,8 @@ public class SceneNodePath<T>
         return GetCached(root);
     }
 
+    public System.Type GetNodeType() => typeof(T);
+
     public static implicit operator NodePath(SceneNodePath<T> from) => from._path;
     public static implicit operator SceneNodePath<T>(NodePath from) => new SceneNodePath<T>(from);
     public static implicit operator SceneNodePath<T>(string from) => new SceneNodePath<T>(from);
