@@ -74,9 +74,11 @@ Every 'Node' class will also have methods, `Get(Node root)` and `GetCached(Node 
 ### Examples:
 
 ```c#
-Scene.NodeName.ChildOfNodeName/*.Path*/.Get(this).SomeMethod();
+Scene.NodeName.ChildOfNodeName.Get(this).SomeMethod();
 // Same as 
 this.GetNode<NodeType>("NodeName/ChildOfNodeName").SomeMethod();
+// Or
+this.GetNode<NodeType>(Scene.NodeName.ChildOfNodeName.Path).SomeMethod();
 ```
 
 When you wanna use a Node more often (e.g. in the `_Process` function) it's a good practise to cache it.
