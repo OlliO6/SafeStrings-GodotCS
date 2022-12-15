@@ -8,25 +8,42 @@ public class ResourcePath<T>
     where T : class
 {
     private string _path;
-    private T _value;
-    private WeakReference<T> _weakValue;
+    private T _strongValue;
+    private WeakReference _weakValue;
 
-    public T Value => _value ??= GD.Load<T>(_path);
+    public T StrongValue => _strongValue ??= GD.Load<T>(_path);
 
-    public WeakReference<T> WeakValue => _weakValue ??= new WeakReference<T>(GD.Load<T>(_path));
+    public T Value
+    {
+        get
+        {
+            if (_weakValue == null || !_weakValue.IsAlive)
+                _weakValue = new WeakReference(GD.Load(_path));
+
+            return _weakValue.Target as T;
+        }
+    }
 
     public ResourcePath(string path)
     {
         _path = path;
     }
 
-    public void Preload() => _value = GD.Load<T>(_path);
-
-    public async Task PreloadAsync(int updateDelayMSec = 50, bool useSubThreads = false)
+    public T Load(bool setWeakCache = true, bool setStrongCache = false)
     {
-        if (_value != null)
-            return;
+        T value = GD.Load<T>(_path);
 
+        if (setWeakCache)
+            _weakValue = new(value);
+
+        if (setStrongCache)
+            _strongValue = value;
+
+        return value;
+    }
+
+    public async Task<T> PreloadAsync(bool setWeakCache = true, bool setStrongCache = false, int updateDelayMSec = 50, bool useSubThreads = false)
+    {
         ResourceLoader.LoadThreadedRequest(this);
 
         while (ResourceLoader.LoadThreadedGetStatus(this) == ResourceLoader.ThreadLoadStatus.InProgress)
@@ -37,16 +54,23 @@ public class ResourcePath<T>
         if (ResourceLoader.LoadThreadedGetStatus(this) != ResourceLoader.ThreadLoadStatus.Loaded)
         {
             GD.PushError($"Resource could not be loaded. Path: '{_path}', Error: {ResourceLoader.LoadThreadedGetStatus(this)}");
-            return;
+            return null;
         }
 
-        _value = ResourceLoader.LoadThreadedGet(this) as T;
+        T value = ResourceLoader.LoadThreadedGet(this) as T;
+
+        if (setWeakCache)
+            _weakValue = new(value);
+
+        if (setStrongCache)
+            _strongValue = value;
+
+        return value;
     }
 
-    public void ReleaseValue()
+    public void ReleaseStrongValue()
     {
-        _value = null;
-        _weakValue = null;
+        _strongValue = null;
     }
 
     public override string ToString() => _path;
