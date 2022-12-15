@@ -15,7 +15,8 @@ public partial class Player : Node, IScene<Player>
 
     // Reference to use often in script (a bit using like @onready in gdscript)
     public Sprite2D Sprite => Scene.Sprite2D.GetCached(this);
-    public AnimationTree AnimTree => Scene.Sprite2D.Node.AnimationTree.GetCached(this);
+    public AnimationTree AnimTree1 => Scene.Sprite2D.Node.AnimationTree.GetCached(this);
+    public AnimationTree AnimTree2 => this.GetSceneNodeCached(Scene.Sprite2D.Node.AnimationTree.Path);
 
     public static Player NewPlayer()
     {
