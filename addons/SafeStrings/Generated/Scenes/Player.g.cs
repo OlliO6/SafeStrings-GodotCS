@@ -1,5 +1,11 @@
-partial class Player
+partial class Player : SafeStrings.IScene<Player>
 {
+    public static Player Instantiate()
+    {
+        var val = SafeStrings.Res.Examples.Player.player_tscn.Value.Instantiate<Player>();
+        ((SafeStrings.IScene<Player>)val).OnInstanced();
+        return val;
+    }
     public static class Scene
     {
         public static partial class Sprite2D

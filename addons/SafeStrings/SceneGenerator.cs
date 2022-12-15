@@ -108,8 +108,30 @@ public class SceneGenerator
                 .AppendLine(";");
 
         sourceBuilder.Append("partial class ")
-            .AppendLine(className)
+            .Append(className)
+            .Append(" : SafeStrings.IScene<")
+            .Append(className)
+            .AppendLine(">")
             .AppendLine("{");
+
+        // Add Instantiate method
+        sourceBuilder.Append("    public static ");
+        if (classNamespace != "")
+            sourceBuilder.Append(classNamespace)
+                .Append(".");
+        sourceBuilder.Append(className)
+            .AppendLine(" Instantiate()")
+            .AppendLine("    {")
+            .Append("        var val = SafeStrings.")
+            .Append(Utils.ConvertResPathToCSPath(scenePath))
+            .Append(".Value.Instantiate<")
+            .Append(className)
+            .AppendLine(">();")
+            .Append("        ((SafeStrings.IScene<")
+            .Append(className)
+            .AppendLine(">)val).OnInstanced();")
+            .AppendLine("        return val;")
+            .AppendLine("    }");
 
         // Add Scene
         sourceBuilder.AppendLine("    public static class Scene\n    {")

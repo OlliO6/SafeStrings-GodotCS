@@ -97,6 +97,15 @@ public MyNode => Scene.Node.MyNode.GetCached(this);
 
 It's kind of like `@onready ... get_node` in gdscript but instead of assigning the field on ready it assigns it at the first use.
 
+You can instantiate a associated scene by calling the `Instantiate()` method on the script type.
+You can also add a `OnInstanced()` method:
+```c#
+public void OnInstanced()
+{
+    // Called When Player.Instantiate() was called
+}
+```
+
 Contributing:
 ------------
 I'd love to see a PR.

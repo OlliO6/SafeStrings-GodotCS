@@ -5,7 +5,7 @@ using SafeStrings;
 
 // Note: Player scene has a really weird structure (for example showcase purpose)
 
-public partial class Player : Node
+public partial class Player : Node, IScene<Player>
 {
     public const float MovementSpeed = 400;
 
@@ -17,7 +17,7 @@ public partial class Player : Node
     public Sprite2D Sprite => Scene.Sprite2D.GetCached(this);
     public AnimationTree AnimTree => Scene.Sprite2D.Node.AnimationTree.GetCached(this);
 
-    public static Player Instantiate()
+    public static Player NewPlayer()
     {
         // Relative to folder containing script.
         return Rel.player_tscn.Value.Instantiate<Player>();
@@ -47,5 +47,10 @@ public partial class Player : Node
         {
             // Jump();
         }
+    }
+
+    public void OnInstanced()
+    {
+        // Called When Player.Instantiate was called
     }
 }

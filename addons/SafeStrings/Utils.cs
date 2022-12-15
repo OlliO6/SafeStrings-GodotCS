@@ -15,11 +15,28 @@ public static class Utils
         return from;
     }
 
-
     public static string ConvertNameToCSName(string filespaceName)
     {
         return ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName
             .Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
+    }
+
+    public static string ConvertResPathToCSPath(string resPath)
+    {
+        string cSPath = "Res";
+
+        resPath = resPath.TrimPrefix("res://");
+
+        string[] array = resPath.Split('/');
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (i != array.Length)
+                cSPath += ".";
+
+            cSPath += ConvertNameToCSName(array[i]);
+        }
+
+        return cSPath;
     }
 
     public static string GetCsFullNameFromScript(CSharpScript script)
