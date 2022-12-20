@@ -148,7 +148,7 @@ public class SceneGenerator
 
         sourceBuilder.AppendLine("}");
 
-        File.WriteAllText($"addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}.g.cs", sourceBuilder.ToString());
+        File.WriteAllText($"addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString());
 
         void AppendNode(int idx)
         {
