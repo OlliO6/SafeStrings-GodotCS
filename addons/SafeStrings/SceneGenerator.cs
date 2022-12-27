@@ -158,27 +158,16 @@ public class SceneGenerator
         void AppendNode(int idx)
         {
             bool isUnique = false;
-            string type = "";
+            string type = GetNodeType(idx, sceneState);
 
             for (int i = 0; i < sceneState.GetNodePropertyCount(idx); i++)
             {
-                string propName = sceneState.GetNodePropertyName(idx, i);
-
-                if (propName == "unique_name_in_owner")
+                if (sceneState.GetNodePropertyName(idx, i) == "unique_name_in_owner" && sceneState.GetNodePropertyValue(idx, i).AsBool())
                 {
                     isUnique = true;
-                    continue;
-                }
-
-                if (propName == "script")
-                {
-                    type = Utils.GetCsFullNameFromScript((CSharpScript)sceneState.GetNodePropertyValue(idx, i));
-                    continue;
+                    break;
                 }
             }
-
-            if (type == "")
-                type = "Godot." + sceneState.GetNodeType(idx);
 
             string nodeName = sceneState.GetNodeName(idx);
             string path = sceneState.GetNodePath(idx);
@@ -240,6 +229,29 @@ public class SceneGenerator
 
             uniqueSceneBuilder.AppendLine("}");
         }
+    }
+
+    private string GetNodeType(int idx, SceneState sceneState)
+    {
+        for (int i = 0; i < sceneState.GetNodePropertyCount(idx); i++)
+        {
+            string propName = sceneState.GetNodePropertyName(idx, i);
+
+            if (propName == "script")
+                return Utils.GetCsFullNameFromScript((CSharpScript)sceneState.GetNodePropertyValue(idx, i));
+        }
+
+        string stateType = sceneState.GetNodeType(idx);
+
+        if (stateType is not "" and not null)
+            return "Godot." + stateType;
+
+        PackedScene instancedScene = sceneState.GetNodeInstance(idx);
+
+        if (instancedScene == null)
+            return "Godot.Node";
+
+        return GetNodeType(0, instancedScene.GetState());
     }
 }
 
