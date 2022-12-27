@@ -17,7 +17,7 @@ public class InputActionsGenerators
         watcher = new FileSystemWatcher();
         watcher.Path = ProjectSettings.GlobalizePath("res://");
         watcher.Filter = "project.godot";
-        
+
         watcher.NotifyFilter = NotifyFilters.Attributes
                                 | NotifyFilters.CreationTime
                                 | NotifyFilters.DirectoryName
@@ -26,7 +26,7 @@ public class InputActionsGenerators
                                 | NotifyFilters.LastWrite
                                 | NotifyFilters.Security
                                 | NotifyFilters.Size;
-        
+
         watcher.EnableRaisingEvents = true;
         watcher.IncludeSubdirectories = false;
 

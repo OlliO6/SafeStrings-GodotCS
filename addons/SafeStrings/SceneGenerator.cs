@@ -29,7 +29,7 @@ public class SceneGenerator
                                 | NotifyFilters.LastWrite
                                 | NotifyFilters.Security
                                 | NotifyFilters.Size;
-        
+
         watcher.Created += OnSceneChanged;
         watcher.Changed += OnSceneChanged;
 
@@ -75,7 +75,6 @@ public class SceneGenerator
 
     public void UpdateScene(string scenePath)
     {
-        GD.Print("Update ", scenePath, ", Containing: ", Settings.SceneAssociations.ContainsKey(scenePath));
         if (!Settings.SceneAssociations.ContainsKey(scenePath))
             return;
 
@@ -124,11 +123,8 @@ public class SceneGenerator
             .AppendLine("{");
 
         // Add Instantiate method
-        sourceBuilder.Append("    public static ");
-        if (classNamespace != "")
-            sourceBuilder.Append(classNamespace)
-                .Append(".");
-        sourceBuilder.Append(className)
+        sourceBuilder.Append("    public static ")
+            .Append(className)
             .AppendLine(" Instantiate()")
             .AppendLine("    {")
             .Append("        var val = SafeStrings.")

@@ -16,7 +16,7 @@ public class ResGenerator
         watcher.Path = Settings.GlobalRootPath;
         watcher.EnableRaisingEvents = true;
         watcher.IncludeSubdirectories = true;
-        
+
         watcher.NotifyFilter = NotifyFilters.Attributes
                                 | NotifyFilters.CreationTime
                                 | NotifyFilters.DirectoryName
@@ -25,7 +25,7 @@ public class ResGenerator
                                 | NotifyFilters.LastWrite
                                 | NotifyFilters.Security
                                 | NotifyFilters.Size;
-        
+
         watcher.Created += OnSomethingChanged;
         watcher.Deleted += OnSomethingChanged;
         watcher.Renamed += OnSomethingChanged;

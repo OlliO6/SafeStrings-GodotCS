@@ -49,7 +49,6 @@ public static class Settings
         {
             { "name", path },
             { "type", (int)@default.VariantType },
-            { "advanced", false }
         });
 
         return @default;
@@ -57,9 +56,12 @@ public static class Settings
 
     public static void AddSceneAssociation(string scenePath, string scriptPath)
     {
-        var newDict = Settings.SceneAssociations.Duplicate();
-        newDict[scenePath] = scriptPath;
-        ProjectSettings.SetSetting(SceneAssociationsPath, newDict);
+        Settings.SceneAssociations[scenePath] = scriptPath;
+
+        ProjectSettings.SetSetting(SceneAssociationsPath,
+            new Dictionary<string, string>(Settings.SceneAssociations));
+
+        ProjectSettings.Save();
     }
 }
 
