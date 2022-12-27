@@ -21,6 +21,15 @@ public class SceneGenerator
 
         watcher.Filter = "*.tscn";
 
+        watcher.NotifyFilter = NotifyFilters.Attributes
+                                | NotifyFilters.CreationTime
+                                | NotifyFilters.DirectoryName
+                                | NotifyFilters.FileName
+                                | NotifyFilters.LastAccess
+                                | NotifyFilters.LastWrite
+                                | NotifyFilters.Security
+                                | NotifyFilters.Size;
+        
         watcher.Created += OnSceneChanged;
         watcher.Changed += OnSceneChanged;
 
