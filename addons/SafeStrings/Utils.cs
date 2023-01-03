@@ -45,9 +45,9 @@ namespace SafeStrings.Editor
             GetCsTypeFromScript(script, out string @namespace, out string @class);
 
             if (@namespace == "")
-                return @class;
+                return $"global::{@class}";
 
-            return $"{@namespace}.{@class}";
+            return $"global::{@namespace}.{@class}";
         }
 
         public static void GetCsTypeFromScript(CSharpScript script, out string @namespace, out string @class)
