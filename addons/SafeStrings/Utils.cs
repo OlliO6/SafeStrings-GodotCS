@@ -19,7 +19,7 @@ namespace SafeStrings.Editor
         public static string ConvertNameToCSName(string filespaceName)
         {
             return ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName
-                .Insert(0, "_")).Replace('.', '_').Replace(' ', '_');
+                .Insert(0, "_")).Replace('.', '_').Replace(' ', '_').Replace('-', '_');
         }
 
         public static string ConvertResPathToCSPath(string resPath)
