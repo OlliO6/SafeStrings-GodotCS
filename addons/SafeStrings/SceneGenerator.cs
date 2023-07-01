@@ -163,7 +163,7 @@ public class SceneGenerator
         }
         catch (System.IO.IOException)
         {
-            Plugin.Instance.GetTree().ToProcessFrame().OnCompleted(() => File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString()));
+            Plugin.Instance.ToSignal(Plugin.Instance.GetTree(), SceneTree.SignalName.ProcessFrame).OnCompleted(() => File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString()));
         }
 
         void AppendNode(int idx)
