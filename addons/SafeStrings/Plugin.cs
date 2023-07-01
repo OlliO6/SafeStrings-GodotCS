@@ -60,7 +60,7 @@ public partial class Plugin : EditorPlugin
                     break;
 
                 case GenerateRelUsingToolItemId:
-                    RelUsingGenerator.GenerateRelUsing(GetEditorInterface().GetCurrentPath().TrimPrefix("res://"));
+                    RelUsingGenerator.GenerateRelUsing(GetEditorInterface().GetCurrentPath());
                     break;
 
                 case AssociateSceneToScriptToolItemId:
@@ -107,7 +107,7 @@ public partial class Plugin : EditorPlugin
         if (Instance == null)
         {
             Instance = this;
-            CallDeferred(MethodName.OnBuilded);
+            Callable.From(OnBuilded).CallDeferred();
         }
     }
 
@@ -116,7 +116,7 @@ public partial class Plugin : EditorPlugin
         string gdType = Instance.GetEditorInterface().GetResourceFilesystem().GetFileType(path);
 
         if (gdType is not "" and not null)
-            return $"Godot.{gdType}";
+            return Utils.ConvertGdTypeToCsType(gdType);
 
         return "Godot.Resource";
     }
@@ -132,7 +132,7 @@ public partial class Plugin : EditorPlugin
         _inputActionsGen = new();
         _resGen = new();
         _sceneGen = new();
-        CallDeferred(MethodName.UpdateAll);
+        Callable.From(UpdateAll).CallDeferred();
     }
 
     void OnAssociateSceneDialogConfirmed()

@@ -33,6 +33,9 @@ public class ResGenerator
 
     private void OnSomethingChanged(object sender, FileSystemEventArgs e)
     {
+        if (e.Name == null)
+            return;
+
         var relativePath = e.Name.Replace('\\', '/');
         var name = e.Name.GetFile();
 
@@ -68,7 +71,7 @@ public class ResGenerator
 
         sb.Append("}");
 
-        File.WriteAllText("addons/SafeStrings/Generated/Res.g.cs", sb.ToString(), Encoding.UTF8);
+        File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/Res.g.cs", sb.ToString(), Encoding.UTF8);
     }
 
     private void AppendDir(StringBuilder sb, DirAccess dir, string indent)

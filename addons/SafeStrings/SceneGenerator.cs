@@ -4,6 +4,7 @@ namespace SafeStrings.Editor;
 using Godot;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 public class SceneGenerator
@@ -57,6 +58,9 @@ public class SceneGenerator
 
     private void OnSceneChanged(object sender, FileSystemEventArgs e)
     {
+        if (e.Name == null)
+            return;
+
         UpdateScene(ProjectSettings.LocalizePath(e.FullPath));
     }
 
@@ -153,7 +157,14 @@ public class SceneGenerator
 
         sourceBuilder.AppendLine("}");
 
-        File.WriteAllText($"addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString());
+        try
+        {
+            File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString());
+        }
+        catch (System.IO.IOException)
+        {
+            Plugin.Instance.GetTree().ToProcessFrame().OnCompleted(() => File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/Scenes/{(classNamespace == "" ? className : $"{classNamespace}.{className}")}_Scene.g.cs", sourceBuilder.ToString()));
+        }
 
         void AppendNode(int idx)
         {
@@ -174,15 +185,23 @@ public class SceneGenerator
             string pathToParent = ((string)sceneState.GetNodePath(idx, true)).TrimPrefix("./");
             string[] pathSegments = pathToParent == "." ? new string[0] : pathToParent.Split('/');
 
-            foreach (string pathSegment in pathSegments)
+            for (int i = 0; i < pathSegments.Length; i++)
             {
-                sceneBuilder.Append("partial class ")
-                    .Append(pathSegment)
+                sceneBuilder.Append("partial class ");
+
+                if (pathSegments.ElementAtOrDefault(i - 1) == pathSegments[i])
+                    sceneBuilder.Append("_");
+
+                sceneBuilder.Append(pathSegments[i])
                     .Append(" { ");
             }
 
-            sceneBuilder.Append("public static partial class ")
-                .Append(nodeName)
+            sceneBuilder.Append("public static partial class ");
+
+            if (pathSegments.LastOrDefault() == nodeName)
+                sceneBuilder.Append("_");
+
+            sceneBuilder.Append(nodeName)
                 .AppendLine("\n{");
 
             sceneBuilder.Append("    public static SafeStrings.SceneNodePath<")
@@ -215,8 +234,20 @@ public class SceneGenerator
 
             uniqueSceneBuilder.Append("    public static SafeStrings.SceneNodePath<")
                 .Append(type)
-                .Append("> Path = ")
-                .Append(path.TrimPrefix("./").Replace('/', '.'))
+                .Append("> Path = Scene.");
+
+            for (int i = 0; i < pathSegments.Length; i++)
+            {
+                if (pathSegments.ElementAtOrDefault(i - 1) == pathSegments[i])
+                    uniqueSceneBuilder.Append("_");
+                uniqueSceneBuilder.Append(pathSegments[i])
+                    .Append(".");
+            }
+
+            if (pathSegments.LastOrDefault() == nodeName)
+                uniqueSceneBuilder.Append("_");
+
+            uniqueSceneBuilder.Append(nodeName)
                 .AppendLine(".Path;");
 
             uniqueSceneBuilder.Append("    public static ")
@@ -237,14 +268,14 @@ public class SceneGenerator
         {
             string propName = sceneState.GetNodePropertyName(idx, i);
 
-            if (propName == "script")
+            if (propName == "script" && sceneState.GetNodePropertyValue(idx, i).Obj is CSharpScript)
                 return Utils.GetCsFullNameFromScript((CSharpScript)sceneState.GetNodePropertyValue(idx, i));
         }
 
         string stateType = sceneState.GetNodeType(idx);
 
         if (stateType is not "" and not null)
-            return "Godot." + stateType;
+            return Utils.ConvertGdTypeToCsType(stateType);
 
         PackedScene instancedScene = sceneState.GetNodeInstance(idx);
 

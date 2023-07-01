@@ -16,7 +16,9 @@ public static class RelUsingGenerator
             return;
         }
 
-        var scriptReader = new StreamReader(pathToScript, Encoding.UTF8);
+        string globalPathToScript = ProjectSettings.GlobalizePath(pathToScript);
+
+        var scriptReader = new StreamReader(globalPathToScript);
         var scriptBuilder = new StringBuilder();
 
         string fileScopedNamespaceLine = "";
@@ -46,7 +48,7 @@ public static class RelUsingGenerator
             scriptBuilder.Insert(0, $"{fileScopedNamespaceLine}\n\n");
 
         scriptReader.Close();
-        File.WriteAllText(pathToScript, scriptBuilder.ToString(), Encoding.UTF8);
+        File.WriteAllText(globalPathToScript, scriptBuilder.ToString());
 
         GD.Print("Added Rel using to ", pathToScript);
 
@@ -54,7 +56,7 @@ public static class RelUsingGenerator
         {
             var sb = new StringBuilder("SafeStrings.Res");
 
-            foreach (string folder in pathToFolder.Split('/'))
+            foreach (string folder in pathToFolder.TrimPrefix("res://").Split('/'))
             {
                 sb.Append(".")
                     .Append(Utils.ConvertNameToCSName(folder));

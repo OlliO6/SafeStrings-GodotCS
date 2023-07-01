@@ -35,6 +35,9 @@ public class InputActionsGenerators
 
     private void OnProjectChanged(object sender, FileSystemEventArgs e)
     {
+        if (e.Name == null)
+            return;
+
         Callable.From(Update).CallDeferred();
     }
 
@@ -77,7 +80,7 @@ public class InputActionsGenerators
 
         sb.Append("}");
 
-        File.WriteAllText("addons/SafeStrings/Generated/InputActions.g.cs", sb.ToString(), Encoding.UTF8);
+        File.WriteAllText($"{Settings.GlobalRootPath}/addons/SafeStrings/Generated/InputActions.g.cs", sb.ToString(), Encoding.UTF8);
     }
 }
 
