@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Godot;
 
 #if TOOLS
@@ -18,8 +20,78 @@ namespace SafeStrings.Editor
 
         public static string ConvertNameToCSName(string filespaceName)
         {
+
             return ((char.IsLetter(filespaceName.First()) || filespaceName.StartsWith('_')) ? filespaceName : filespaceName
                 .Insert(0, "_")).Replace('.', '_').Replace(' ', '_').Replace('-', '_');
+                
+            string result = "";
+
+            if (filespaceName.Length == 0)
+                return "";
+
+            if (!char.IsLetter(filespaceName.First()) && !filespaceName.StartsWith('_'))
+                result = "_";
+
+            foreach (char c in filespaceName.ToPascalCase())
+            {
+                if (char.IsLetterOrDigit(c))
+                {
+                    result += c;
+                    continue;
+                }
+
+                result += '_';
+            }
+
+            return result;
+        }
+
+        public static string ConvertGdTypeToCsType(string gdType)
+        {
+            return gdType switch
+            {
+                "Object" => "Godot.GodotObject",
+                "AudioStreamMP3" => "Godot.AudioStreamMP3",
+                _ => $"Godot.{PascalToFixedPascalCase(gdType)}"
+            };
+        }
+
+        public static string PascalToFixedPascalCase(string toConvert)
+        {
+            if (toConvert.Length == 0)
+            {
+                return toConvert;
+            }
+
+            if (toConvert.Length <= 2)
+            {
+                return toConvert.ToUpper();
+            }
+
+            string[] snakeParts = toConvert.ToSnakeCase().Split('_');
+
+            string result = "";
+
+            foreach (string snalkePart in snakeParts)
+            {
+                string part = "";
+                part += char.IsLetter(snalkePart[0]) ? char.ToUpper(snalkePart[0]) : snalkePart[0];
+
+                for (int i = 1; i < snalkePart.Length; i++)
+                {
+                    if (char.IsDigit(snalkePart[i - 1]))
+                    {
+                        // Use uppercase after digits.
+                        part += char.IsLetter(snalkePart[i]) ? char.ToUpper(snalkePart[i]) : snalkePart[i];
+                        continue;
+                    }
+
+                    part += char.IsLetter(snalkePart[i]) ? char.ToLower(snalkePart[i]) : snalkePart[i];
+                }
+                result += part;
+            }
+
+            return result;
         }
 
         public static string ConvertResPathToCSPath(string resPath)

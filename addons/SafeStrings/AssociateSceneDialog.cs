@@ -22,35 +22,35 @@ public partial class AssociateSceneDialog : ConfirmationDialog
             new PanelContainer().WithChilds(
                 new VBoxContainer()
                 {
-                    SizeFlagsVertical = (int)Control.SizeFlags.ExpandFill,
-                    SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                    SizeFlagsVertical = Control.SizeFlags.ExpandFill,
+                    SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
                 }.WithChilds(
                     new HBoxContainer()
                     {
-                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                        SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
                     }.WithChilds(
                         new Label()
                         {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                             Text = "Scene Path:"
                         },
                         _scenePathEdit = new LineEdit()
                         {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                             SizeFlagsStretchRatio = 2
                         }),
                     new HBoxContainer()
                     {
-                        SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill
+                        SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
                     }.WithChilds(
                         new Label()
                         {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                             Text = "CS Script Path:"
                         },
                         _scriptPathEdit = new LineEdit()
                         {
-                            SizeFlagsHorizontal = (int)Control.SizeFlags.ExpandFill,
+                            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                             SizeFlagsStretchRatio = 2
                         }))));
     }
